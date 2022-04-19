@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ejemplo 1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+
+</head>
+
+<div class="container-fluid mt-3" id="app">
+    <input type="text" class="form-control" v-model="criterioDeBusqueda"
+        placeholder="Ingresar un criterio de busqueda..." >
+    <br>
+    <input type="text" class="form-control" v-model="criterioDeBusqueda1"
+            placeholder="Ingresar un Nombre o Apellido a buscar...">
+            <br>
+   <input type="text" class="form-control" v-model="criterioDeBusqueda2"
+            placeholder="Ingresar un DNI.">
+    <br>
+    <div v-if="cantCaracteres >= 0 && cantCaracteres < 2" class="alert alert-danger">
+        <p > Ingrese {{3 - cantCaracteres}} caracteres para iniciar la busqueda</p>
+    </div>
+    <div v-else-if="cantCaracteres == 2" class="alert alert-danger">
+        <p > Ingrese {{3 - cantCaracteres}} caracter más para iniciar la busqueda</p>
+    </div>
+    <br>
+    <div class="card-deck m-0">
+        <div class="row">
+            <div class="col" v-for="persona in personasFiltradas">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                        <p class="card-text">dni {{persona.dni}}</p>
+                        <a href="#" class="card-link">{{persona.correo}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   
+</div>
+
+
+</html>
+
+<script>
+
+    
+    new Vue({
+        el: '#app',
+        data: {
+            criterioDeBusqueda: '',
+            criterioDeBusqueda1: '',
+            criterioDeBusqueda2: '',
+            //Aquí, en este array es donde tienen que agregar su información
+            personas: [
+                {
+                    nombre: "Daniel",
+                    apellido: "Sanchez",
+                    correo: "danielsanchez68@hotmail.com",
+                    dni: "20442873"
+                },
+                {
+                    nombre: "Daniel",
+                    apellido: "Pisa",
+                    correo: "danielp@gmail.com",
+                    dni: "26272727"
+                },
+                {
+                    nombre: "Pedro",
+                    apellido: "Gomez",
+                    correo: "pgomez@gmail.com",
+                    dni: "43211342"
+                },
+                {
+                    nombre: "Esteban",
+                    apellido: "Quito",
+                    correo: "estebanquito@hotmail.com",
+                    dni: "19837428"
+                },
+                {
+                    nombre: "Alicia",
+                    apellido: "Martinez",
+                    correo: "amartinez@yahoo.com",
+                    dni: "32838594"
+                },
+            ]
+
+
+            
+        },
+        computed: {
+            
+            personasFiltradas() {
+                if(this.criterioDeBusqueda.length < 3 && this.criterioDeBusqueda1.length < 3 && this.criterioDeBusqueda2.length < 3){
+                return this.personas
+                } else {
+                return this.personas.filter((persona) => {
+                    let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
+                    let registroNombreYApellido =`${persona.nombre} ${persona.apellido}`                 
+                    let registroDNI =`${persona.dni}`                 
+                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase()) &&  registroNombreYApellido.toLowerCase().includes(this.criterioDeBusqueda1.toLowerCase())  &&  registroDNI.toLowerCase().includes(this.criterioDeBusqueda2.toLowerCase())
+                }); 
+            }},
+            
+            cantCaracteres() {
+                let cant = this.criterioDeBusqueda.length
+                let cant1 = this.criterioDeBusqueda1.length
+                let cant2 = this.criterioDeBusqueda2.length
+
+                let cantMayor = Math.max(cant, cant1, cant2);
+                return cantMayor;
+            }
+
+        },
+        methods: {
+            getNombreCompleto(persona) {
+                return `${persona.nombre} ${persona.apellido}`
+            }
+
+        }
+    });   
+
+</script>
